@@ -5,12 +5,13 @@ const cors = require('cors');
 const morgan = require('morgan');
 const cookierParser = require('cookie-parser');
 const PORT = process.env.PORT || 5000;
+const router = require('./routes/router');
 
 const app = express();
 
 app.use(
   cors({
-    origin: ['http://localhost:3000'],
+    origin: 'http://localhost:3000',
     credentials: true,
   })
 );
@@ -18,7 +19,7 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use(cookierParser());
 
-const dbURI = `mongodb+srv://officialayo540:${process.env.PASSWORD}@ytdlcluster.iuxkaub.mongodb.net/ytdl_db`;
+const dbURI = `mongodb+srv://officialayo540:${process.env.PASSWORD}@ytdlcluster.iuxkaub.mongodb.net/${process.env.DATABASE}`;
 
 (async function () {
   try {
@@ -29,18 +30,9 @@ const dbURI = `mongodb+srv://officialayo540:${process.env.PASSWORD}@ytdlcluster.
   }
 })();
 
-// test code snippet
+app.use(router);
 
-const fs = require('fs');
-const ytdl = require('ytdl-core');
-
-const videoUrl = 'https://www.youtube.com/watch?v=VIDEO_ID';
-
-ytdl(videoUrl)
-  .pipe(fs.createWriteStream('video.mp4'))
-  .on('finish', () => {
-    console.log('Video downloaded successfully!');
-  })
-  .on('error', (err) => {
-    console.error('Error downloading video:', err);
-  });
+// ? User Stories
+// * There'd be a form in the client side to receive the youtube URL and a button to submit the form
+// * on inputChange make request to the server to get the required infos
+// * On Click of a btn from the client side, make a post request to a specified endpoint ('/download') and download the movie
